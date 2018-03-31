@@ -10,17 +10,17 @@ public class PaymentSQLGeneratorTest {
     SQLGenerator gen = new SQLGenerator();
 
     @Test public void testSelect() {
-        assertEquals("SELECT payerid, payeraccountid, recipientID, recipientaccountid " +
+        assertEquals("SELECT payerid, payeraccountid, recipientid, recipientaccountid " +
             "FROM PAYMENTS WHERE operationid = ?", gen.select(Payment.class));
     }
 
     @Test public void testInsert() {
-        assertEquals("INSERT INTO PAYMENTS(operationid, payerid, payeraccountid, recipientID, recipientaccountid)" +
+        assertEquals("INSERT INTO PAYMENTS(operationid, payerid, payeraccountid, recipientid, recipientaccountid) " +
             "VALUES (?, ?, ?, ?, ?)", gen.insert(Payment.class));
     }
 
     @Test public void testUpdate() {
-        assertEquals("UPDATE PAYMENTS SET payerid = ?, payeraccountid = ?, recipientID = ?, recipientaccountid = ?" +
+        assertEquals("UPDATE PAYMENTS SET payerid = ?, payeraccountid = ?, recipientid = ?, recipientaccountid = ? " +
             "WHERE operationid = ?", gen.update(Payment.class));
     }
 

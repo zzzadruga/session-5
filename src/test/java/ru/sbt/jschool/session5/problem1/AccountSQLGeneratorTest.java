@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  */
-public class AccountSQLGenerator {
+public class AccountSQLGeneratorTest {
     SQLGenerator gen = new SQLGenerator();
 
     @Test public void testSelect() {
@@ -16,11 +16,11 @@ public class AccountSQLGenerator {
 
     @Test public void testInsert() {
         assertEquals("INSERT INTO BANK_ACCOUNTS(clientid, accountid, bankid, curr, balance)" +
-            "VALUES (?, ?, ?, ?, ?)", gen.insert(Account.class));
+            " VALUES (?, ?, ?, ?, ?)", gen.insert(Account.class));
     }
 
     @Test public void testUpdate() {
-        assertEquals("UPDATE BANK_ACCOUNTS SET clientid = ?, curr = ?, balance = ?" +
+        assertEquals("UPDATE BANK_ACCOUNTS SET clientid = ?, curr = ?, balance = ? " +
             "WHERE accountid = ? AND bankid = ?", gen.update(Account.class));
     }
 
