@@ -16,15 +16,15 @@ public class AccountSQLGenerator {
 
     @Test public void testInsert() {
         assertEquals("INSERT INTO BANK_ACCOUNTS(clientid, accountid, bankid, curr, balance)" +
-            "VALUES (?, ?, ?, ?, ?)", gen.select(Account.class));
+            "VALUES (?, ?, ?, ?, ?)", gen.insert(Account.class));
     }
 
     @Test public void testUpdate() {
         assertEquals("UPDATE BANK_ACCOUNTS SET clientid = ?, curr = ?, balance = ?" +
-            "WHERE accountid = ? AND bankid = ?", gen.select(Account.class));
+            "WHERE accountid = ? AND bankid = ?", gen.update(Account.class));
     }
 
     @Test public void testDelete() {
-        assertEquals("DELETE FROM BANK_ACCOUNTS WHERE accountid = ? AND bankid = ?", gen.select(Account.class));
+        assertEquals("DELETE FROM BANK_ACCOUNTS WHERE accountid = ? AND bankid = ?", gen.delete(Account.class));
     }
 }

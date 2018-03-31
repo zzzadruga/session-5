@@ -16,15 +16,15 @@ public class PaymentSQLGeneratorTest {
 
     @Test public void testInsert() {
         assertEquals("INSERT INTO PAYMENTS(operationid, payerid, payeraccountid, recipientID, recipientaccountid)" +
-            "VALUES (?, ?, ?, ?, ?)", gen.select(Payment.class));
+            "VALUES (?, ?, ?, ?, ?)", gen.insert(Payment.class));
     }
 
     @Test public void testUpdate() {
         assertEquals("UPDATE PAYMENTS SET payerid = ?, payeraccountid = ?, recipientID = ?, recipientaccountid = ?" +
-            "WHERE operationid = ?", gen.select(Payment.class));
+            "WHERE operationid = ?", gen.update(Payment.class));
     }
 
     @Test public void testDelete() {
-        assertEquals("DELETE FROM PAYMENTS WHERE operationid = ?", gen.select(Payment.class));
+        assertEquals("DELETE FROM PAYMENTS WHERE operationid = ?", gen.delete(Payment.class));
     }
 }
