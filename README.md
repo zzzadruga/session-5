@@ -1,7 +1,20 @@
 # Session-5
 
 1. Реализовать класс `SQLGenerator`, который генерирует SQL выражения для переданного на вход класса.
-    * Значения заменяются на символ '?'
+    * Значения заменяются на символ '?'.
+
+    Пример SQL-запросов:
+
+```
+    INSERT INTO table1(id, value) VALUES(?, ?);
+
+    SELECT value FROM table1 WHERE id = ?;
+
+    UPDATE table1 SET value1 = ? WHERE id = ?;
+
+    DELETE FROM table1 WHERE id = ?;
+
+```
 
 2. Реализовать класс, который переводит поданный обьект в json-формат.
     * Написать тесты
