@@ -13,7 +13,6 @@
     UPDATE table1 SET value1 = ? WHERE id = ?;
 
     DELETE FROM table1 WHERE id = ?;
-
 ```
 
 2. Реализовать класс, который переводит поданный обьект в json-формат.
