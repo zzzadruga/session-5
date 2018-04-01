@@ -8,77 +8,70 @@ import java.util.*;
 /**
  */
 public class SQLGenerator {
+    private static final String SEPARATOR_COMMA = ", ";
+    private static final String SEPARATOR_AND = " AND ";
     public <T> String insert(Class<T> clazz) {
         StringBuilder query = new StringBuilder();
         StringBuilder values = new StringBuilder();
         query.append("INSERT INTO ")
-             .append(getTableName(clazz));
+                .append(getTableName(clazz));
         getFields(clazz).forEach((k, v) -> {
             if (!v.equals(FieldsAnnotation.NONE)){
                 query.append(values.length() == 0 ? "(" : ", ")
-                     .append(k);
+                        .append(k);
                 values.append(values.length() == 0 ? "?" : ", ?");
             }
         });
         query.append(") VALUES (")
-             .append(values)
-             .append(")");
+                .append(values)
+                .append(")");
+        System.out.println(getFields(clazz));
         return query.toString();
     }
 
     public <T> String update(Class<T> clazz) {
         StringBuilder query = new StringBuilder();
         Map fields = getFields(clazz);
-        fields.forEach((k, v) -> {
-            if (v.equals(FieldsAnnotation.COLUMN_NAME)){
-                query.append(query.length() == 0 ? "UPDATE " + getTableName(clazz) + " SET " : ", ")
-                        .append(k)
-                        .append(" = ?");
-            }
-        });
-        query.append(" WHERE ");
-        fields.forEach((k, v) -> {
-            if (v.equals(FieldsAnnotation.PRIMARY_KEY)){
-                query.append(k)
-                     .append(" = ? AND ");
-            }
-        });
-        return query.delete(query.length() - " AND ".length(), query.length()).toString();
+        query.append("UPDATE ")
+             .append(getTableName(clazz))
+             .append(" SET ")
+             .append(getFormattedColumnList(fields, FieldsAnnotation.COLUMN_NAME, true, SEPARATOR_COMMA))
+             .append(" WHERE ")
+             .append(getFormattedColumnList(fields, FieldsAnnotation.PRIMARY_KEY, true, SEPARATOR_AND));
+        return query.toString();
     }
 
     public <T> String delete(Class<T> clazz) {
         StringBuilder query = new StringBuilder();
         query.append("DELETE FROM ")
              .append(getTableName(clazz))
-             .append(" WHERE ");
-        getFields(clazz).forEach((k, v) -> {
-            if (v.equals(FieldsAnnotation.PRIMARY_KEY)){
-                query.append(k)
-                        .append(" = ? AND ");
-            }
-        });
-        return query.delete(query.length() - " AND ".length(), query.length()).toString();
+             .append(" WHERE ")
+             .append(getFormattedColumnList(getFields(clazz), FieldsAnnotation.PRIMARY_KEY, true, SEPARATOR_AND));
+        return query.toString();
     }
 
     public <T> String select(Class<T> clazz) {
         StringBuilder query = new StringBuilder();
         Map fields = getFields(clazz);
-        fields.forEach((k, v) -> {
-            if (v.equals(FieldsAnnotation.COLUMN_NAME)){
-                query.append(query.length() == 0 ? "SELECT " : ", ")
-                     .append(k);
-            }
-        });
-        query.append(" FROM ")
-             .append(getTableName(clazz));
-        fields.forEach((k, v) -> {
-            if (v.equals(FieldsAnnotation.PRIMARY_KEY)){
-                query.append(query.substring(query.length() - 1).equals("?") ? " AND " : " WHERE ")
-                        .append(k)
-                        .append(" = ?");
-            }
-        });
+        query.append("SELECT ")
+             .append(getFormattedColumnList(fields, FieldsAnnotation.COLUMN_NAME, false, SEPARATOR_COMMA))
+             .append(" FROM ")
+             .append(getTableName(clazz))
+             .append(" WHERE ")
+             .append(getFormattedColumnList(fields, FieldsAnnotation.PRIMARY_KEY, true, SEPARATOR_AND));
         return query.toString();
+    }
+    private String getFormattedColumnList(Map<String, FieldsAnnotation> fields, FieldsAnnotation annotation, boolean isArguments, String separator){
+        StringBuilder listOfColumns = new StringBuilder();
+        String argument = isArguments ? " = ?" : "";
+        fields.forEach((k, v) -> {
+            if (v.equals(annotation)) {
+                listOfColumns.append(listOfColumns.length() == 0 ? "" : argument + separator);
+                listOfColumns.append(k);
+            }
+        });
+        listOfColumns.append(argument);
+        return listOfColumns.toString();
     }
 
     private <T> Map<String, FieldsAnnotation> getFields(Class<T> clazz){
