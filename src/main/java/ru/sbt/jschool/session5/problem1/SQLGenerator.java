@@ -47,7 +47,17 @@ public class SQLGenerator {
     }
 
     public <T> String delete(Class<T> clazz) {
-        return null;
+        StringBuilder query = new StringBuilder();
+        query.append("DELETE FROM ")
+             .append(getTableName(clazz))
+             .append(" WHERE ");
+        getFields(clazz).forEach((k, v) -> {
+            if (v.equals(FieldsAnnotation.PRIMARY_KEY)){
+                query.append(k)
+                        .append(" = ? AND ");
+            }
+        });
+        return query.delete(query.length() - " AND ".length(), query.length()).toString();
     }
 
     public <T> String select(Class<T> clazz) {
