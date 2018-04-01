@@ -23,13 +23,27 @@ public class SQLGenerator {
         query.append(") VALUES (")
              .append(values)
              .append(")");
-        System.out.println(getFields(clazz));
-
         return query.toString();
     }
 
     public <T> String update(Class<T> clazz) {
-        return null;
+        StringBuilder query = new StringBuilder();
+        Map fields = getFields(clazz);
+        fields.forEach((k, v) -> {
+            if (v.equals(FieldsAnnotation.COLUMN_NAME)){
+                query.append(query.length() == 0 ? "UPDATE " + getTableName(clazz) + " SET " : ", ")
+                        .append(k)
+                        .append(" = ?");
+            }
+        });
+        query.append(" WHERE ");
+        fields.forEach((k, v) -> {
+            if (v.equals(FieldsAnnotation.PRIMARY_KEY)){
+                query.append(k)
+                     .append(" = ? AND ");
+            }
+        });
+        return query.delete(query.length() - " AND ".length(), query.length()).toString();
     }
 
     public <T> String delete(Class<T> clazz) {
@@ -46,11 +60,10 @@ public class SQLGenerator {
             }
         });
         query.append(" FROM ")
-             .append(getTableName(clazz))
-             .append(" WHERE ");
+             .append(getTableName(clazz));
         fields.forEach((k, v) -> {
             if (v.equals(FieldsAnnotation.PRIMARY_KEY)){
-                query.append(query.substring(query.length() - 1).equals("?") ? " AND " : "")
+                query.append(query.substring(query.length() - 1).equals("?") ? " AND " : " WHERE ")
                         .append(k)
                         .append(" = ?");
             }
