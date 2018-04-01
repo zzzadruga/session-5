@@ -1,7 +1,5 @@
 package ru.sbt.jschool.session5.problem1;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -12,12 +10,18 @@ import java.util.*;
 public class SQLGenerator {
     public <T> String insert(Class<T> clazz) {
         StringBuilder query = new StringBuilder();
-        Set fields;
+        StringBuilder values = new StringBuilder();
         query.append("INSERT INTO ")
-             .append(getTableName(clazz))
-             .append((fields = getFields(clazz).keySet()).toString().replace("[", "(").replace("]", ")"))
-             .append(" VALUES (?")
-             .append((fields.size() > 1) ? StringUtils.repeat(", ?", fields.size() - 1) : "")
+             .append(getTableName(clazz));
+        getFields(clazz).forEach((k, v) -> {
+            if (!v.equals(FieldsAnnotation.NONE)){
+                query.append(values.length() == 0 ? "(" : ", ")
+                     .append(k);
+                values.append(values.length() == 0 ? "?" : ", ?");
+            }
+        });
+        query.append(") VALUES (")
+             .append(values)
              .append(")");
         System.out.println(getFields(clazz));
 
@@ -34,21 +38,23 @@ public class SQLGenerator {
 
     public <T> String select(Class<T> clazz) {
         StringBuilder query = new StringBuilder();
-        StringBuilder primaryKey = new StringBuilder();
-        for(Field field : clazz.getDeclaredFields()){
-            if (field.getAnnotation(Column.class) != null){
+        Map fields = getFields(clazz);
+        fields.forEach((k, v) -> {
+            if (v.equals(FieldsAnnotation.COLUMN_NAME)){
                 query.append(query.length() == 0 ? "SELECT " : ", ")
-                     .append((field.getAnnotation(Column.class).name().isEmpty() ? field.getName() : field.getAnnotation(Column.class).name()).toLowerCase());
+                     .append(k);
             }
-            else if (field.getAnnotation(PrimaryKey.class) != null) {
-                    primaryKey.append(primaryKey.length() == 0 ? "" : " AND ")
-                              .append(field.getName().toLowerCase()).append(" = ?");
-            }
-        }
+        });
         query.append(" FROM ")
-             .append(clazz.getAnnotation(Table.class) != null ? clazz.getAnnotation(Table.class).name() : clazz.getSimpleName())
-             .append(" WHERE ")
-             .append(primaryKey);
+             .append(getTableName(clazz))
+             .append(" WHERE ");
+        fields.forEach((k, v) -> {
+            if (v.equals(FieldsAnnotation.PRIMARY_KEY)){
+                query.append(query.substring(query.length() - 1).equals("?") ? " AND " : "")
+                        .append(k)
+                        .append(" = ?");
+            }
+        });
         return query.toString();
     }
 
@@ -60,6 +66,9 @@ public class SQLGenerator {
             }
             else if (field.getAnnotation(PrimaryKey.class) != null) {
                 fields.put(getColumnName(PrimaryKey.class, field), FieldsAnnotation.PRIMARY_KEY);
+            }
+            else{
+                fields.put(field.getName(), FieldsAnnotation.NONE);
             }
         }
         return fields;
