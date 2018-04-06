@@ -1,11 +1,15 @@
 package ru.sbt.jschool.session5.problem2;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Convert {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+    private static final String INDENT = "    ";
+    private static int globalDeep = 0;
 
     public static void main(String[] args) throws IllegalAccessException {
         RewardedTrainedDog rewardedTrainedDog = new RewardedTrainedDog("Жучка", "Дворняга", 10.56, 70, new Date(2008, 4, 12), 10, "Class");
@@ -26,17 +30,27 @@ public class Convert {
     }
 
     public static String toJSON(Object object) throws IllegalAccessException {
+        int deep = globalDeep++;
         if (object == null){
             return "null";
         }
         StringBuilder stringBuilder = new StringBuilder();
         Field[] fields = object.getClass().getDeclaredFields();
-        stringBuilder.append("{");
+        stringBuilder.append(StringUtils.repeat(INDENT, deep)).append('{').append('\n');
         for(Field field : getInheritedPrivateFields(object.getClass())){
             field.setAccessible(true);
-            stringBuilder.append("\"" +  field.getName() + "\": " + getValue(field.get(object)) + ",\n");
+            stringBuilder.append(StringUtils.repeat(INDENT, deep + 1))
+                         .append('"')
+                         .append(field.getName())
+                         .append('"')
+                         .append(':')
+                         .append(' ')
+                         .append(getValue(field.get(object)))
+                         .append(',')
+                         .append('\n')
+                         .append('\n');
         }
-        stringBuilder.append("}");
+        stringBuilder.append(StringUtils.repeat(INDENT, deep)).append('}');
         return stringBuilder.toString();
     }
 
@@ -76,29 +90,42 @@ public class Convert {
         }
 
         if (object instanceof Collection || object.getClass().isArray()) {
+            int deep = globalDeep;
+            deep++;
             Collection collection = object.getClass().isArray() ? Arrays.asList(object) : (Collection) object;
             if (collection.size() == 0){
                 return "[]";
             }
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(" [\n");
+            stringBuilder.append('[')
+                         .append('\n');
             for (Object element : collection){
-                stringBuilder.append("    ").append(getValue(element)).append(",");
+                stringBuilder.append(StringUtils.repeat(INDENT, deep + 1))
+                             .append(getValue(element))
+                             .append(',')
+                             .append('\n');
             }
-            stringBuilder.append("]");
+            stringBuilder.append(StringUtils.repeat(INDENT, deep))
+                         .append(']');
             return stringBuilder.toString();
         }
         if (object instanceof Map) {
+            int deep = globalDeep;
+            deep++;
             Map<Object, Object> map = (Map)object;
             if (map.size() == 0){
                 return "[]";
             }
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(" [\n");
+            stringBuilder.append('[')
+                         .append('\n');
             for(Map.Entry<Object, Object> entry : map.entrySet()){
-                stringBuilder.append("    ").append(getValue(entry.getKey())).append(" : ").append(getValue(entry.getValue())).append(",\n");
+                stringBuilder.append(StringUtils.repeat(INDENT, deep + 1))
+                             .append(getValue(entry.getKey()))
+                             .append(" : ")
+                             .append(getValue(entry.getValue())).append(",\n");
             }
-            return stringBuilder.append("]").toString();
+            return stringBuilder.append(StringUtils.repeat(INDENT, deep)).append(']').toString();
         }
         return toJSON(object);
     }
