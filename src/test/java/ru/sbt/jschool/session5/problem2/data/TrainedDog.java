@@ -1,12 +1,9 @@
 package ru.sbt.jschool.session5.problem2.data;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class TrainedDog extends Dog {
-    private Map<String, String> tricks = new HashMap<>();
+    private Map<String, String> tricks = new LinkedHashMap<>();
 
     public TrainedDog(String name, String breed, Double weight, Integer growth, Date dateOfBirth) {
         super(name, breed, weight, growth, dateOfBirth);

@@ -1,7 +1,5 @@
 package ru.sbt.jschool.session5.problem2;
 
-import java.util.Map;
-
 /**
  */
 @FunctionalInterface

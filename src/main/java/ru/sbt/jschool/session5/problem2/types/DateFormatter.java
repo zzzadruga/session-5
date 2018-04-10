@@ -5,7 +5,6 @@ import ru.sbt.jschool.session5.problem2.JSONTypeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @author NIzhikov

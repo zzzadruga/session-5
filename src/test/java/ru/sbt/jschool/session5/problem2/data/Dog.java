@@ -9,7 +9,7 @@ public class Dog {
     private Integer growth;
     private Date dateOfBirth;
     private List<Dog> children = new ArrayList<>();
-    private Map<Calendar, List<String>> dailyFood = new HashMap<>();
+    private Map<Calendar, List<String>> dailyFood = new LinkedHashMap<>();
 
     public Dog(String name, String breed, Double weight, Integer growth, Date dateOfBirth) {
         this.name = name;
