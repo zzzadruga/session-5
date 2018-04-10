@@ -1,27 +1,32 @@
 package ru.sbt.jschool.session5.problem2.types;
+
 import org.apache.commons.lang3.StringUtils;
 import ru.sbt.jschool.session5.problem2.JSONFormatter;
-import ru.sbt.jschool.session5.problem2.JSONFormatterImpl;
 import ru.sbt.jschool.session5.problem2.JSONTypeFormatter;
 
 import java.util.Map;
 
 public class MapFormatter implements JSONTypeFormatter<Map> {
     @Override
-    public String format(Map aMap, JSONFormatter formatter, Map<String, Object> ctx) throws IllegalAccessException {
+    public String format(Map aMap, JSONFormatter formatter, int deep) throws IllegalAccessException {
         Map<Object, Object> map = aMap;
-        if (map.size() == 0){
+        if (map.size() == 0) {
             return "[]";
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append('[')
+        StringBuilder sb = new StringBuilder();
+        sb.append('[')
                 .append('\n');
-        for(Map.Entry<Object, Object> entry : map.entrySet()){
-            stringBuilder.append(StringUtils.repeat("    ", 1))
-                    .append(formatter.marshall(entry.getKey()))
+        for (Map.Entry<Object, Object> entry : map.entrySet()) {
+            sb.append(sb.length() != 2 ? ",\n" : "")
+                    .append(StringUtils.repeat(formatter.INDENT, deep + 1))
+                    .append('"')
+                    .append(formatter.marshall(entry.getKey(), deep + 1))
                     .append(" : ")
-                    .append(formatter.marshall(entry.getValue())).append(",\n");
+                    .append(formatter.marshall(entry.getValue(), deep + 1));
         }
-        return stringBuilder.append(StringUtils.repeat("    ", 1)).append(']').toString();
+        return sb.append('\n')
+                .append(StringUtils.repeat(formatter.INDENT, deep))
+                .append(']')
+                .toString();
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class StringFormatter implements JSONTypeFormatter<String> {
     @Override
-    public String format(String s, JSONFormatter formatter, Map<String, Object> ctx) {
+    public String format(String s, JSONFormatter formatter, int deep) {
         return s;
     }
 }

@@ -8,8 +8,7 @@ import java.util.Calendar;
 import java.util.Map;
 
 public class CalendarFormatter implements JSONTypeFormatter<Calendar> {
-    @Override
-    public String format(Calendar calendar, JSONFormatter formatter, Map<String, Object> ctx) {
+    @Override public String format(Calendar calendar, JSONFormatter formatter, int deep) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format((calendar).getTime());
     }

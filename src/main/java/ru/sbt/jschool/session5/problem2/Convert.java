@@ -1,6 +1,8 @@
 package ru.sbt.jschool.session5.problem2;
 
 import org.apache.commons.lang3.StringUtils;
+import ru.sbt.jschool.session5.problem2.data.Dog;
+import ru.sbt.jschool.session5.problem2.data.RewardedTrainedDog;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -9,7 +11,6 @@ import java.util.*;
 public class Convert {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
     private static final String INDENT = "    ";
-    private static int globalDeep = 0;
 
     public static void main(String[] args) throws IllegalAccessException {
         RewardedTrainedDog rewardedTrainedDog = new RewardedTrainedDog("Жучка", "Дворняга", 10.56, 70, new Date(2008, 4, 12), 10, "Class");
@@ -30,24 +31,26 @@ public class Convert {
     }
 
     public static String toJSON(Object object) throws IllegalAccessException {
-        int deep = globalDeep++;
+        return toJSON(object, 0);
+    }
+    private static String toJSON(Object object, int deep) throws IllegalAccessException {
         if (object == null){
             return "null";
         }
         StringBuilder stringBuilder = new StringBuilder();
         Field[] fields = object.getClass().getDeclaredFields();
-        stringBuilder.append(StringUtils.repeat(INDENT, deep)).append('{').append('\n');
+        stringBuilder.append('\n').append(StringUtils.repeat(INDENT, deep)).append('{');
         for(Field field : getInheritedPrivateFields(object.getClass())){
             field.setAccessible(true);
-            stringBuilder.append(StringUtils.repeat(INDENT, deep + 1))
+            stringBuilder.append('\n')
+                         .append(StringUtils.repeat(INDENT, deep + 1))
                          .append('"')
                          .append(field.getName())
                          .append('"')
                          .append(':')
                          .append(' ')
-                         .append(getValue(field.get(object)))
+                         .append(getValue(field.get(object), deep + 1))
                          .append(',')
-                         .append('\n')
                          .append('\n');
         }
         stringBuilder.append(StringUtils.repeat(INDENT, deep)).append('}');
@@ -68,7 +71,7 @@ public class Convert {
         return result;
     }
 
-    private static String getValue(Object object) throws IllegalAccessException {
+    private static String getValue(Object object, int deep) throws IllegalAccessException {
         if (object == null) {
             return "";
         }
@@ -90,8 +93,6 @@ public class Convert {
         }
 
         if (object instanceof Collection || object.getClass().isArray()) {
-            int deep = globalDeep;
-            deep++;
             Collection collection = object.getClass().isArray() ? Arrays.asList(object) : (Collection) object;
             if (collection.size() == 0){
                 return "[]";
@@ -101,17 +102,15 @@ public class Convert {
                          .append('\n');
             for (Object element : collection){
                 stringBuilder.append(StringUtils.repeat(INDENT, deep + 1))
-                             .append(getValue(element))
+                             .append(getValue(element, deep))
                              .append(',')
                              .append('\n');
             }
-            stringBuilder.append(StringUtils.repeat(INDENT, deep))
+            stringBuilder.append(StringUtils.repeat(INDENT, deep + 1))
                          .append(']');
             return stringBuilder.toString();
         }
         if (object instanceof Map) {
-            int deep = globalDeep;
-            deep++;
             Map<Object, Object> map = (Map)object;
             if (map.size() == 0){
                 return "[]";
@@ -121,12 +120,12 @@ public class Convert {
                          .append('\n');
             for(Map.Entry<Object, Object> entry : map.entrySet()){
                 stringBuilder.append(StringUtils.repeat(INDENT, deep + 1))
-                             .append(getValue(entry.getKey()))
+                             .append(getValue(entry.getKey(), deep))
                              .append(" : ")
-                             .append(getValue(entry.getValue())).append(",\n");
+                             .append(getValue(entry.getValue(), deep + 1)).append(',').append('\n');
             }
-            return stringBuilder.append(StringUtils.repeat(INDENT, deep)).append(']').toString();
+            return stringBuilder.append(StringUtils.repeat(INDENT, deep + 1)).append(']').toString();
         }
-        return toJSON(object);
+        return toJSON(object, deep);
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class NumberFormatter implements JSONTypeFormatter<Number> {
     @Override
-    public String format(Number number, JSONFormatter formatter, Map<String, Object> ctx) throws IllegalAccessException {
+    public String format(Number number, JSONFormatter formatter, int deep) throws IllegalAccessException {
         if (number instanceof Float || number instanceof Double) {
             return number.toString().replace("0.", ".");
         } else {

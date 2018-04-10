@@ -3,6 +3,7 @@ package ru.sbt.jschool.session5.problem2.data;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class TrainedDog extends Dog {
     private Map<String, String> tricks = new HashMap<>();
@@ -20,9 +21,17 @@ public class TrainedDog extends Dog {
     }
 
     @Override
-    public String toString() {
-        return "TrainedDog{" +
-                "tricks=" + tricks +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TrainedDog)) return false;
+        if (!super.equals(o)) return false;
+        TrainedDog that = (TrainedDog) o;
+        return Objects.equals(getTricks(), that.getTricks());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), getTricks());
     }
 }

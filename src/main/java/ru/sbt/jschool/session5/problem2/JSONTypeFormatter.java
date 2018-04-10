@@ -6,5 +6,5 @@ import java.util.Map;
  */
 @FunctionalInterface
 public interface JSONTypeFormatter<T> {
-    String format(T t, JSONFormatter formatter, Map<String, Object> ctx) throws IllegalAccessException;
+    String format(T t, JSONFormatter formatter, int deep) throws IllegalAccessException;
 }

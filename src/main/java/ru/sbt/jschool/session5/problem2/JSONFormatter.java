@@ -5,13 +5,14 @@ import java.util.Map;
 /**
  */
 public interface JSONFormatter {
+    String INDENT = "    ";
     /**
      * Marshall object to JSON string.
      *
      * @param obj Any object.
      * @return String in JSON format.
      */
-    String marshall(Object obj) throws IllegalAccessException;
+    String marshall(Object obj, int deep) throws IllegalAccessException;
 
     /**
      * Add predefined type to formatter.

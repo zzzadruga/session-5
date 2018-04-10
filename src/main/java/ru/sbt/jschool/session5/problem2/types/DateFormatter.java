@@ -11,7 +11,7 @@ import java.util.Map;
  * @author NIzhikov
  */
 public class DateFormatter implements JSONTypeFormatter<Date> {
-    @Override public String format(Date date, JSONFormatter formatter, Map<String, Object> ctx) {
+    @Override public String format(Date date, JSONFormatter formatter, int deep) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return dateFormat.format(date);
     }

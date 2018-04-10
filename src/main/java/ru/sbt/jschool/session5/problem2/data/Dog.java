@@ -36,15 +36,22 @@ public class Dog {
     }
 
     @Override
-    public String toString() {
-        return "Dog{" +
-                "name='" + name + '\'' +
-                ", breed='" + breed + '\'' +
-                ", weight=" + weight +
-                ", growth=" + growth +
-                ", dateOfBirth=" + dateOfBirth +
-                ", children=" + children +
-                ", dailyFood=" + dailyFood +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Dog)) return false;
+        Dog dog = (Dog) o;
+        return Objects.equals(name, dog.name) &&
+                Objects.equals(breed, dog.breed) &&
+                Objects.equals(weight, dog.weight) &&
+                Objects.equals(growth, dog.growth) &&
+                Objects.equals(dateOfBirth, dog.dateOfBirth) &&
+                Objects.equals(getChildren(), dog.getChildren()) &&
+                Objects.equals(getDailyFood(), dog.getDailyFood());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(name, breed, weight, growth, dateOfBirth, getChildren(), getDailyFood());
     }
 }
