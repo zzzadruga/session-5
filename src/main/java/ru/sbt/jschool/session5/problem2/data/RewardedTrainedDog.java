@@ -1,4 +1,4 @@
-package ru.sbt.jschool.session5.problem2;
+package ru.sbt.jschool.session5.problem2.data;
 
 import java.util.Date;
 
