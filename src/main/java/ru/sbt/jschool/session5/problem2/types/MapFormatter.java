@@ -21,7 +21,9 @@ public class MapFormatter implements JSONTypeFormatter<Map> {
                     .append(StringUtils.repeat(formatter.INDENT, deep + 1))
                     .append('"')
                     .append(formatter.marshall(entry.getKey(), deep + 1))
-                    .append(" : ")
+                    .append('"')
+                    .append(":")
+                    .append(' ')
                     .append(formatter.marshall(entry.getValue(), deep + 1));
         }
         return sb.append('\n')

@@ -1,14 +1,11 @@
 package ru.sbt.jschool.session5.problem2.types;
 
-import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import ru.sbt.jschool.session5.problem2.JSONFormatter;
 import ru.sbt.jschool.session5.problem2.JSONTypeFormatter;
 
-import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ObjectFormatter implements JSONTypeFormatter<Object>{
     @Override public String format(Object object, JSONFormatter formatter, int deep) throws IllegalAccessException {

@@ -1,7 +1,5 @@
 package ru.sbt.jschool.session5.problem2;
 
-import java.util.Map;
-
 /**
  */
 public interface JSONFormatter {
@@ -12,6 +10,15 @@ public interface JSONFormatter {
      * @param obj Any object.
      * @return String in JSON format.
      */
+    String marshall(Object obj) throws IllegalAccessException;
+
+    /**
+     * Marshall object to JSON string.
+     *
+     * @param obj Any object, deep - indent for print.
+     * @return String in JSON format.
+     */
+
     String marshall(Object obj, int deep) throws IllegalAccessException;
 
     /**
